@@ -60,5 +60,4 @@ extension Quake: MKAnnotation {
     var subtitle: String? {
         "Magnitude: \(magnitude)"
     }
-    
 }
