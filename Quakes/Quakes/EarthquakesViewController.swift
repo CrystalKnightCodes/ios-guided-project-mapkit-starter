@@ -10,6 +10,8 @@ import UIKit
 import MapKit
 
 class EarthquakesViewController: UIViewController {
+    
+    private let quakeFetcher = QuakeFetcher()
 		
 	// NOTE: You need to import MapKit to link to MKMapView
 	@IBOutlet var mapView: MKMapView!
@@ -30,6 +32,17 @@ class EarthquakesViewController: UIViewController {
         NSLayoutConstraint.activate([
             userTrackingButton.leadingAnchor.constraint(equalTo: mapView.leadingAnchor, constant: 20),
             mapView.bottomAnchor.constraint(equalTo: userTrackingButton.bottomAnchor, constant: 20)
+            
         ])
+        fetchQuakes()
 	}
+    
+    func fetchQuakes() {
+        quakeFetcher.fetchQuakes { (quakes, error) in
+            if let error = error {
+                print("Error fetching quakes: \(error)")
+            }
+            print(quakes)
+        }
+    }
 }
