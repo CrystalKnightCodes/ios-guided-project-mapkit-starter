@@ -20,6 +20,12 @@ class EarthquakesViewController: UIViewController {
 	
     private let locationManager = CLLocationManager()
     
+    var quakes: [Quake] = [] {
+        didSet {
+            mapView.addAnnotation(quakes)
+        }
+    }
+    
 	override func viewDidLoad() {
 		super.viewDidLoad()
 		
@@ -38,11 +44,15 @@ class EarthquakesViewController: UIViewController {
 	}
     
     func fetchQuakes() {
-        quakeFetcher.fetchQuakes { (quakes, error) in
+        let visibleRegion = mapView.visibleMapRect
+        
+        
+        quakeFetcher.fetchQuakes(in: visibleRegion) { (quakes, error) in
             if let error = error {
                 print("Error fetching quakes: \(error)")
             }
-            print(quakes)
+            
+            self.quakes = quakes ?? []
         }
     }
 }
