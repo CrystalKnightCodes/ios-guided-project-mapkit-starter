@@ -9,6 +9,10 @@
 import UIKit
 import MapKit
 
+extension String {
+    static let annotationReuseIdentifier = "QuakeAnnotationView"
+}
+
 class EarthquakesViewController: UIViewController {
     
     private let quakeFetcher = QuakeFetcher()
@@ -48,6 +52,9 @@ class EarthquakesViewController: UIViewController {
             mapView.bottomAnchor.constraint(equalTo: userTrackingButton.bottomAnchor, constant: 20)
             
         ])
+        
+        mapView.register(MKMarkerAnnotationView.self, forAnnotationViewWithReuseIdentifier: .annotationReuseIdentifier)
+        
         fetchQuakes()
 	}
     
@@ -69,5 +76,14 @@ class EarthquakesViewController: UIViewController {
 extension EarthquakesViewController: MKMapViewDelegate {
     func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
         fetchQuakes()
+    }
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        guard let quake = annotation as? Quake else { return nil }
+        
+        guard let annotationView = mapView.dequeueReusableAnnotationView(withIdentifier: .annotationReuseIdentifier, for: quake) as? MKAnnotationView else {
+            preconditionFailure("Missing the registered map annotation view")
+        }
+        return annotationView
     }
 }
